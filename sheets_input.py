@@ -22,7 +22,7 @@ def checkout(name, time, row):
 
 
 def add_time(name):
-    time = str(datetime.datetime.now())
+    time = str(datetime.datetime.now().time())
 
     for index in range(len(data)-1, -1, -1):
         if name in data[index] and data[index][2] == '':
@@ -31,3 +31,12 @@ def add_time(name):
         elif data[index][2] != '':
             checkin(name, time)
             break
+
+
+def update_total_time():
+    current_data = sheet.sheet1.get_all_values()
+    for entry in data:
+        time_format = "%H:%M:%S"
+        time1 = datetime.datetime.strptime(entry[1], time_format)
+        time2 = datetime.datetime.strptime(entry[2], time_format)
+        entry[3] = time2-time1
