@@ -1,5 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from sheets_input import add_time
 
+#TODO: load data here, get it from sheets & convert into json-like dict
+data = {"50374567": "Ronan"}
 
 class Ui_GroupBox(object):
     def setupUi(self, GroupBox):
@@ -19,17 +22,20 @@ class Ui_GroupBox(object):
         self.textbox.textChanged.connect(self.update_label)
 
     def update_label(self):
-        if len(str(text)) == 8:
+        text = str(self.textbox.text())
+        if len(text) == 8:
             print("Full ID Obtained!")
+            add_time(data[text])
 
     def retranslateUi(self, GroupBox):
         _translate = QtCore.QCoreApplication.translate
         GroupBox.setWindowTitle(_translate("GroupBox", "GroupBox"))
         self.label.setText(_translate("GroupBox", "Please Input Your ID # or Scan Your ID"))
 
-    def createWindow():
+    def createWindow(self):
         setupUi()
         retranslateUi()
         window.show()
         sys.exit(app.exec_())
-    
+
+Ui_GroupBox.createWindow()
