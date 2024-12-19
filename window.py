@@ -37,8 +37,8 @@ class Ui_GroupBox(object):
 
     def createWindow(self):
         setupUi()
-        retranslateUi()
         window.show()
         sys.exit(app.exec_())
 
-Ui_GroupBox.createWindow()
+if __name__ == "__main__":
+    Ui_GroupBox.createWindow()
