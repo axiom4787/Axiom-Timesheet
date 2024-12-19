@@ -24,8 +24,11 @@ class Ui_GroupBox(object):
     def update_label(self):
         text = str(self.textbox.text())
         if len(text) == 8:
-            print("Full ID Obtained!")
-            add_time(data[text])
+            try:
+                print("Full ID Obtained!")
+                add_time(data[text])
+            except:
+                print("invalid ID")
 
     def retranslateUi(self, GroupBox):
         _translate = QtCore.QCoreApplication.translate
