@@ -8,35 +8,36 @@ for person in data:
     names.append(person[0])
 
 
-def checkin(name, time):
+def checkin(name, date, time):
     print(f"Checking in {name}")
-    data.append([name, time, '', ''])
-    row = data.index([name, time, '', '']) + 1
-    sheet.sheet1.update(f"A{row}:B{row}", [[name, time]])
+    data.append([name, date, time, '', ''])
+    row = data.index([name, date, time, '', '']) + 1
+    sheet.sheet1.update(f"A{row}:C{row}", [[name, date, time]])
+
+
+def update_total_time(index):
+    time_format = "%:%:%"
+    time1 = datetime.datetime.strptime(data[index][2], time_format)
+    time2 = datetime.datetime.strptime(data[index][3], time_format)
+    time_difference = time2 - time1
+    data[index][3] = time_difference
+    return time_difference
 
 
 def checkout(name, time, row):
     print(f"Checking out {name}")
-    data[row-1] = [name, data[row-1][1], time, '']
-    sheet.sheet1.update(f"A{row+1}:D{row+1}", [data[row-1]])
+    data[row-1] = [name, data[row-1][1], data[row-1][2], time, update_total_time(row-1)]
+    sheet.sheet1.update(f"A{row+1}:E{row+1}", [data[row-1]])
 
 
 def add_time(name):
     time = str(datetime.datetime.now().time())
+    date = str(datetime.datetime.now().date())
 
     for index in range(len(data)-1, -1, -1):
-        if name in data[index] and data[index][2] == '':
+        if name in data[index] and data[index][3] == '':
             checkout(name, time, index)
             break
-        elif data[index][2] != '':
-            checkin(name, time)
+        elif data[index][3] != '':
+            checkin(name, date, time)
             break
-
-
-def update_total_time():
-    current_data = sheet.sheet1.get_all_values()
-    for entry in data:
-        time_format = "%H:%M:%S"
-        time1 = datetime.datetime.strptime(entry[1], time_format)
-        time2 = datetime.datetime.strptime(entry[2], time_format)
-        entry[3] = time2-time1
