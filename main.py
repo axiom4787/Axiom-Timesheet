@@ -1,3 +1,3 @@
-from sheets_output import add_time
+from log_output import add_time
 
 add_time("Tanmay")
