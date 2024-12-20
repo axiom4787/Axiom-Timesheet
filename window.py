@@ -30,6 +30,11 @@ class Ui_GroupBox(object):
         self.plainTextEdit.setGeometry(QtCore.QRect(440, 350, 521, 61))
         self.plainTextEdit.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.plainTextEdit.setObjectName("plainTextEdit")
+        
+        font = self.plainTextEdit.font()
+        font.setPointSize(self.plainTextEdit.height() // 2)  # Adjust the divisor to fit the text properly
+        self.plainTextEdit.setFont(font)
+
         self.label = QtWidgets.QLabel(GroupBox)
         self.label.setGeometry(QtCore.QRect(610, 420, 191, 16))
         self.label.setObjectName("label")
@@ -59,6 +64,8 @@ class Ui_GroupBox(object):
             except KeyError:
                 print("Invalid ID")
                 show_popup("Invalid ID, please try again.")
+
+            self.plainTextEdit.setPlainText("")
 
     def retranslateUi(self, GroupBox):
         _translate = QtCore.QCoreApplication.translate
