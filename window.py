@@ -1,8 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from sheets_input import add_time
+from sheets_input import add_time, checkin, checkout
+import sys
+import datafetch
 
 #TODO: load data here, get it from sheets & convert into json-like dict
-data = {"50374567": "Ronan"}
+data = datafetch.data()
+data = {"50374567": "Ronan"} # Dummy data
 checkins = []
 
 def show_popup(message):
@@ -38,19 +41,24 @@ class Ui_GroupBox(object):
     def update_label(self):
         text = self.plainTextEdit.toPlainText()
         if len(text) == 8:
+
             try:
                 print(f"Full ID Obtained! Welcome, {data[text]}")
-                #add_time(data[text])
+                fullname = data[text]
+                firstname = data[text].split(" ")[0]
                 
-                if data[text] not in checkins:
-                    checkins.append(data[text])
-                    show_popup(f"Welcome, {data[text]}!")
+                if fullname not in checkins:
+                    checkins.append(fullname)
+                    show_popup(f"Welcome, {firstname}!")
+                    checkin(fullname)
                 else:
-                    checkins.pop(checkins.index(data[text]))
-                    show_popup(f"You're all set, {data[text]}!")
+                    checkins.pop(checkins.index(fullname))
+                    show_popup(f"You're all set, {firstname}!")
+                    checkout(fullname)
+            
             except KeyError:
                 print("Invalid ID")
-                show_popup("Invalid ID")
+                show_popup("Invalid ID, please try again.")
 
     def retranslateUi(self, GroupBox):
         _translate = QtCore.QCoreApplication.translate
@@ -58,7 +66,6 @@ class Ui_GroupBox(object):
         self.label.setText(_translate("GroupBox", "Please Input Your ID # or Scan Your ID"))
 
 def createWindow():
-    import sys  # Import sys module
     app = QtWidgets.QApplication([])
     window = QtWidgets.QGroupBox()
     ui = Ui_GroupBox()
