@@ -3,10 +3,6 @@ from connection import sheet
 
 data = sheet.sheet1.get_all_values()
 
-names = []
-for person in data:
-    names.append(person[0])
-
 
 def checkin(name: str, date: str, time: str):
     """
