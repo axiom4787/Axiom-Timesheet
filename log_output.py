@@ -21,7 +21,7 @@ def checkin(name: str, date: str, time: str):
     sheet.sheet1.update(f"A{row}:C{row}", [[name, date, time]])
 
 
-def update_total_time(index: int, final_time: str):
+def update_total_time(index: int, final_time: str) -> float:
     """
     calculates the total time a student has spent and updates it in both local list and gsheet.
     :param index: the index of the entry that is being checked out
@@ -48,7 +48,13 @@ for running_entry in running_time_data:
         print(e, running_entry)
 
 
-def update_running_time(name: str, total_time: float):
+def update_running_time(name: str, total_time: float) -> float:
+    """
+    used in checkout method to update the running total time sheet per person
+    :param name: name of the student -- used to find the index
+    :param total_time: the total clocked in time while checking out
+    :return: the total time so far including previous entries.
+    """
     running_time_data[alpha_names.index(name)][1] += total_time
     return running_time_data[alpha_names.index(name)][1]
 
