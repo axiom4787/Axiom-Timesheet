@@ -37,27 +37,10 @@ running_time_data = third_sheet.get_all_values()
 running_time_data.pop(0)
 alpha_names = [running_total_entry[0] for running_total_entry in running_time_data]
 
-for running_entry in running_time_data:
-    try:
-        running_entry[1] = float(running_entry[1])
-    except Exception as e:
-        print(e, running_entry)
-
-
-def update_running_time(name: str, total_time: float) -> float:
-    """
-    used in checkout method to update the running total time sheet per person
-    :param name: name of the student -- used to find the index
-    :param total_time: the total clocked in time while checking out
-    :return: the total time so far including previous entries.
-    """
-    running_time_data[alpha_names.index(name)][1] += total_time
-    return running_time_data[alpha_names.index(name)][1]
-
 
 def checkout(name: str, time: str, row: int):
     """
-    checks out a student and updates the local list and gsheet accordingly.
+    checks out a student and updates the local list and gsheet (log and running time) accordingly.
     :param name: the student that is checking out
     :param time: the time when they checked out
     :param row: index at which the entry is in the list
@@ -65,8 +48,9 @@ def checkout(name: str, time: str, row: int):
     print(f"Checking out {name}")
     data[row] = [name, data[row][1], data[row][2], time, update_total_time(row, time)]
     sheet.sheet1.update(f"A{row+1}:E{row+1}", [data[row]])
-    third_sheet.update(f"B{(alpha_names.index(name))+2}",
-                        [[update_running_time(name, update_total_time(row, time))]])
+    total_time = (float(running_time_data[alpha_names.index(name)][1]) + update_total_time(row, time))
+    running_time_data[alpha_names.index(name)][1] = total_time
+    third_sheet.update(f"B{(alpha_names.index(name))+2}", [[total_time]])
 
 
 def add_time(name: str):
