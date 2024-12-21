@@ -65,9 +65,25 @@ def add_time(student_id: str):
     date = str(datetime.datetime.now().date())
 
     for index in range(len(data)-1, -1, -1):
-        if student_id in data[index] and data[index][4] == '':
-            checkout(student_id, time, index)
-            break
-        elif student_id in data[index] and data[index][4] != '':
-            checkin(student_id, date, time)
-            break
+        if student_id in data[index]:
+            if data[index][4] == '':
+                checkout(student_id, time, index)
+                return None
+            elif data[index][4] != '':
+                checkin(student_id, date, time)
+                return None
+    checkin(student_id, date, time)
+
+
+def forgot_checkout():
+    for entry in data:
+        if entry[4] == '':
+            time1 = datetime.datetime.strptime(entry[3], '%H:%M:%S.%f')
+            time2 = datetime.datetime.strptime("18:00:00.00", '%H:%M:%S.%f')
+            time_difference = (time2 - time1).total_seconds()
+            time_difference = round(time_difference / 3600, 2)
+            entry[5] = time_difference / 2
+            entry[4] = "FALSE"
+            row = data.index(entry)+1
+            sheet.sheet1.update(f"E{row}:F{row}", [[entry[4], entry[5]]])
+
