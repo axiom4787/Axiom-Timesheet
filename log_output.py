@@ -68,6 +68,6 @@ def add_time(student_id: str):
         if student_id in data[index] and data[index][4] == '':
             checkout(student_id, time, index)
             break
-        elif data[index][4] != '':
+        elif student_id in data[index] and data[index][4] != '':
             checkin(student_id, date, time)
             break
