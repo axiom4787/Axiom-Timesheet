@@ -21,7 +21,7 @@ def checkin(name: str, date: str, time: str):
     sheet.sheet1.update(f"A{row}:C{row}", [[name, date, time]])
 
 
-def update_total_time(index, final_time):
+def update_total_time(index: int, final_time: str):
     """
     calculates the total time a student has spent and updates it in both local list and gsheet.
     :param index: the index of the entry that is being checked out
@@ -36,7 +36,24 @@ def update_total_time(index, final_time):
     return time_difference
 
 
-def checkout(name, time, row):
+third_sheet = sheet.get_worksheet(2)
+running_time_data = third_sheet.get_all_values()
+running_time_data.pop(0)
+alpha_names = [running_total_entry[0] for running_total_entry in running_time_data]
+
+for running_entry in running_time_data:
+    try:
+        running_entry[1] = float(running_entry[1])
+    except Exception as e:
+        print(e, running_entry)
+
+
+def update_running_time(name: str, total_time: float):
+    running_time_data[alpha_names.index(name)][1] += total_time
+    return running_time_data[alpha_names.index(name)][1]
+
+
+def checkout(name: str, time: str, row: int):
     """
     checks out a student and updates the local list and gsheet accordingly.
     :param name: the student that is checking out
@@ -46,9 +63,11 @@ def checkout(name, time, row):
     print(f"Checking out {name}")
     data[row] = [name, data[row][1], data[row][2], time, update_total_time(row, time)]
     sheet.sheet1.update(f"A{row+1}:E{row+1}", [data[row]])
+    third_sheet.update(f"B{(alpha_names.index(name))+2}",
+                        [[update_running_time(name, update_total_time(row, time))]])
 
 
-def add_time(name):
+def add_time(name: str):
     """
     adds the entry itself to the local list and the gsheet.
     :param name: the student that is being logged

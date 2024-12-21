@@ -1,3 +1,3 @@
 from log_output import add_time
 
-add_time("Tanmay")
+add_time("Ronan Glavin")
