@@ -1,20 +1,22 @@
 import datetime
 from connection import sheet
+from windows import data as id_dict
 
 data = sheet.sheet1.get_all_values()
 
 
-def checkin(name: str, date: str, time: str):
+def checkin(student_id: str, date: str, time: str):
     """
     Checks in a student into the timesheet log and updates it in both local list and gsheet.
-    :param name: name of the student
+    :param student_id: id of the student
     :param date: the date of the entry
     :param time: the time of the entry
     """
-    print(f"Checking in {name}")
-    data.append([name, date, time, '', ''])
-    row = data.index([name, date, time, '', '']) + 1
-    sheet.sheet1.update(f"A{row}:C{row}", [[name, date, time]])
+    checkin_name = id_dict[student_id]
+    print(f"Checking in {checkin_name}")
+    data.append([checkin_name, student_id, date, time, '', ''])
+    row = data.index([checkin_name, student_id, date, time, '', '']) + 1
+    sheet.sheet1.update(f"A{row}:D{row}", [[checkin_name, student_id, date, time]])
 
 
 def update_total_time(index: int, final_time: str) -> float:
@@ -24,47 +26,64 @@ def update_total_time(index: int, final_time: str) -> float:
     :param final_time: time_out
     :return: the difference in time-out and time-in in terms of hours in decimals
     """
-    time1 = datetime.datetime.strptime(data[index][2], '%H:%M:%S.%f')
+    time1 = datetime.datetime.strptime(data[index][3], '%H:%M:%S.%f')
     time2 = datetime.datetime.strptime(final_time, '%H:%M:%S.%f')
     time_difference = (time2 - time1).total_seconds()
     time_difference = round(time_difference / 3600, 2)
-    data[index][3] = time_difference
+    data[index][5] = time_difference
     return time_difference
 
 
 third_sheet = sheet.get_worksheet(2)
 running_time_data = third_sheet.get_all_values()
 running_time_data.pop(0)
-alpha_names = [running_total_entry[0] for running_total_entry in running_time_data]
+alpha_id = [running_total_entry[1] for running_total_entry in running_time_data]
 
 
-def checkout(name: str, time: str, row: int):
+def checkout(student_id: str, time: str, row: int):
     """
     checks out a student and updates the local list and gsheet (log and running time) accordingly.
-    :param name: the student that is checking out
+    :param student_id: the id of the student that is checking out
     :param time: the time when they checked out
     :param row: index at which the entry is in the list
     """
-    print(f"Checking out {name}")
-    data[row] = [name, data[row][1], data[row][2], time, update_total_time(row, time)]
-    sheet.sheet1.update(f"A{row+1}:E{row+1}", [data[row]])
-    total_time = (float(running_time_data[alpha_names.index(name)][1]) + update_total_time(row, time))
-    running_time_data[alpha_names.index(name)][1] = total_time
-    third_sheet.update(f"B{(alpha_names.index(name))+2}", [[total_time]])
+    checkout_name = id_dict[student_id]
+    print(f"Checking out {checkout_name}")
+    data[row] = [checkout_name, data[row][1], data[row][2], data[row][3], time, update_total_time(row, time)]
+    sheet.sheet1.update(f"A{row+1}:F{row+1}", [data[row]])
+    total_time = (float(running_time_data[alpha_id.index(student_id)][2]) + update_total_time(row, time))
+    running_time_data[alpha_id.index(student_id)][2] = total_time
+    third_sheet.update(f"C{(alpha_id.index(student_id))+2}", [[total_time]])
 
 
-def add_time(name: str):
+def add_time(student_id: str):
     """
     adds the entry itself to the local list and the gsheet.
-    :param name: the student that is being logged
+    :param student_id: the id of the student that is being logged
     """
     time = str(datetime.datetime.now().time())
     date = str(datetime.datetime.now().date())
 
     for index in range(len(data)-1, -1, -1):
-        if name in data[index] and data[index][3] == '':
-            checkout(name, time, index)
-            break
-        elif data[index][3] != '':
-            checkin(name, date, time)
-            break
+        if student_id in data[index]:
+            if data[index][4] == '':
+                checkout(student_id, time, index)
+                return None
+            elif data[index][4] != '':
+                checkin(student_id, date, time)
+                return None
+    checkin(student_id, date, time)
+
+
+def forgot_checkout():
+    for entry in data:
+        if entry[4] == '':
+            time1 = datetime.datetime.strptime(entry[3], '%H:%M:%S.%f')
+            time2 = datetime.datetime.strptime("18:00:00.00", '%H:%M:%S.%f')
+            time_difference = (time2 - time1).total_seconds()
+            time_difference = round(time_difference / 3600, 2)
+            entry[5] = time_difference / 2
+            entry[4] = "FALSE"
+            row = data.index(entry)+1
+            sheet.sheet1.update(f"E{row}:F{row}", [[entry[4], entry[5]]])
+
