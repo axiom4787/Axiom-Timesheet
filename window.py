@@ -52,7 +52,7 @@ class Ui_GroupBox(object):
         text = self.plainTextEdit.toPlainText()
         if len(text) == 8:
             try:
-                print(data[text])
+                data[text]
                 msg = add_time(text)
                 show_popup(msg)
 
