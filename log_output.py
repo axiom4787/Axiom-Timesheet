@@ -70,10 +70,10 @@ def add_time(student_id: str):
         if student_id in data[index]:
             if data[index][4] == '':
                 checkout(student_id, time, index)
-                return f"Welcome, {id_dict[student_id]}!"
+                return f"You're all set, {id_dict[student_id]}!"
             elif data[index][4] != '':
                 checkin(student_id, date, time)
-                return f"You're all set, {id_dict[student_id]}!"
+                return f"Welcome, {id_dict[student_id]}!"
     checkin(student_id, date, time)
     return f"Welcome, {id_dict[student_id]}!"
 
