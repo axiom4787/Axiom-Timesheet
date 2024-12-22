@@ -5,7 +5,6 @@ import datafetch
 
 # Load data here, get it from sheets & convert into json-like dict
 data = datafetch.data()
-print(data)
 checkins = []
 
 def show_popup(message):
@@ -47,19 +46,10 @@ class Ui_GroupBox(object):
         text = self.plainTextEdit.toPlainText()
         if len(text) == 8:
             try:
-                print(f"Full ID Obtained! Welcome, {data[text]}")
-                fullname = data[text]
-                firstname = data[text].split(" ")[0]
-                
-                if fullname not in checkins:
-                    checkins.append(fullname)
-                    show_popup(f"Welcome, {firstname}!")
-                    checkin(text)
-                else:
-                    checkins.pop(checkins.index(fullname))
-                    show_popup(f"You're all set, {firstname}!")
-                    checkout(text)
-            
+                data[text]
+                msg = add_time(text)
+                show_popup(msg)
+
             except KeyError as e:
                 print(f"Invalid ID, {e}")
                 show_popup("Invalid ID, please try again.")
