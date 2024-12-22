@@ -73,6 +73,7 @@ def add_time(student_id: str):
                 checkin(student_id, date, time)
                 return f"You're all set, {id_dict[student_id]}!"
     checkin(student_id, date, time)
+    return f"Welcome, {id_dict[student_id]}!"
 
 
 def forgot_checkout():
