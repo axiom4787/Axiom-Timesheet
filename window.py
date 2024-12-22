@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from sheets_input import add_time, checkin, checkout
+from sheets_input import *
 import sys
 import datafetch
 
@@ -22,6 +22,8 @@ def show_popup(message):
 
 class Ui_GroupBox(object):
     def setupUi(self, GroupBox):
+        GroupBox.closeEvent = self.closeEvent
+        
         GroupBox.setObjectName("Timesheet")
         GroupBox.resize(1433, 888)
         GroupBox.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -41,6 +43,10 @@ class Ui_GroupBox(object):
         self.retranslateUi(GroupBox)
         QtCore.QMetaObject.connectSlotsByName(GroupBox)
         self.plainTextEdit.textChanged.connect(self.update_label)  # Connect the textChanged signal to the update_label method
+
+    def closeEvent(self, event):
+        print("window close")
+        forgot_checkout()
 
     def update_label(self):
         text = self.plainTextEdit.toPlainText()
@@ -66,11 +72,13 @@ def createWindow():
     app = QtWidgets.QApplication.instance()
     if app is None:
         app = QtWidgets.QApplication(sys.argv)
-        
+
+
     window = QtWidgets.QGroupBox()
     ui = Ui_GroupBox()
     ui.setupUi(window)
     window.show()
+
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
