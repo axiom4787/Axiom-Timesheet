@@ -3,18 +3,18 @@ from sheets_input import add_time, checkin, checkout
 import sys
 import datafetch
 
-#TODO: load data here, get it from sheets & convert into json-like dict
+# Load data here, get it from sheets & convert into json-like dict
 data = datafetch.data()
-data = {"50374567": "Ronan"} # Dummy data
+print(data)
 checkins = []
 
 def show_popup(message):
-    #create app if we don't have one
-    app = QtWidgets.QApplication.instance()
-    if app is None:
-        app = QtWidgets.QApplication(sys.argv)
-
-    #create msg_box
+    # Create msg_box
+    window = QtWidgets.QApplication.instance()
+    if window is None:
+        window = QtWidgets.QApplication(sys.argv)
+        
+    window = QtWidgets.QGroupBox()
     msg_box = QtWidgets.QMessageBox()
     msg_box.setText(message)
     msg_box.setWindowTitle("Message")
@@ -23,7 +23,7 @@ def show_popup(message):
 
 class Ui_GroupBox(object):
     def setupUi(self, GroupBox):
-        GroupBox.setObjectName("GroupBox")
+        GroupBox.setObjectName("Timesheet")
         GroupBox.resize(1433, 888)
         GroupBox.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.plainTextEdit = QtWidgets.QPlainTextEdit(GroupBox)
@@ -46,7 +46,6 @@ class Ui_GroupBox(object):
     def update_label(self):
         text = self.plainTextEdit.toPlainText()
         if len(text) == 8:
-
             try:
                 print(f"Full ID Obtained! Welcome, {data[text]}")
                 fullname = data[text]
@@ -55,25 +54,29 @@ class Ui_GroupBox(object):
                 if fullname not in checkins:
                     checkins.append(fullname)
                     show_popup(f"Welcome, {firstname}!")
-                    checkin(fullname)
+                    checkin(text)
                 else:
                     checkins.pop(checkins.index(fullname))
                     show_popup(f"You're all set, {firstname}!")
-                    checkout(fullname)
+                    checkout(text)
             
-            except KeyError:
-                print("Invalid ID")
+            except KeyError as e:
+                print(f"Invalid ID, {e}")
                 show_popup("Invalid ID, please try again.")
 
             self.plainTextEdit.setPlainText("")
 
     def retranslateUi(self, GroupBox):
         _translate = QtCore.QCoreApplication.translate
-        GroupBox.setWindowTitle(_translate("GroupBox", "GroupBox"))
-        self.label.setText(_translate("GroupBox", "Please Input Your ID # or Scan Your ID"))
+        GroupBox.setWindowTitle(_translate("Timesheet", "Timesheet"))
+        self.label.setText(_translate("Timesheet", "Please Input Your ID # or Scan Your ID"))
 
 def createWindow():
-    app = QtWidgets.QApplication([])
+    # Create a QApplication instance if one doesn't exist
+    app = QtWidgets.QApplication.instance()
+    if app is None:
+        app = QtWidgets.QApplication(sys.argv)
+        
     window = QtWidgets.QGroupBox()
     ui = Ui_GroupBox()
     ui.setupUi(window)
