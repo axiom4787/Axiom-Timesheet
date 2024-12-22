@@ -1,6 +1,3 @@
-from log_output import add_time, forgot_checkout
+from window import createWindow
 
-try:
-    add_time("50647504")
-except KeyboardInterrupt:
-    forgot_checkout()
+createWindow()

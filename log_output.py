@@ -1,6 +1,8 @@
 import datetime
 from connection import sheet
-from window import data as id_dict
+from datafetch import data
+
+id_dict = data()
 
 data = sheet.sheet1.get_all_values()
 
