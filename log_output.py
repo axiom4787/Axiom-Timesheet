@@ -89,7 +89,11 @@ def forgot_checkout():
             time2 = datetime.datetime.strptime("18:00:00.00", '%H:%M:%S.%f')
             time_difference = (time2 - time1).total_seconds()
             time_difference = round(time_difference / 3600, 2)
-            entry[5] = time_difference / 2
+            time_difference = time_difference / 2
+            entry[5] = time_difference
             entry[4] = "FALSE"
             row = data.index(entry)+1
             sheet.sheet1.update(f"E{row}:F{row}", [[entry[4], entry[5]]])
+            total_time = (float(running_time_data[alpha_id.index(entry[1])][2]) + entry[5])
+            running_time_data[alpha_id.index(entry[1])][2] = total_time
+            third_sheet.update(f"C{(alpha_id.index(entry[1])) + 2}", [[total_time]])
