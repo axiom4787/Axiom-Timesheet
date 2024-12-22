@@ -77,6 +77,10 @@ def add_time(student_id: str):
 
 
 def forgot_checkout():
+    # TODO: add an auto email functionality
+    """
+    finds missing checkouts and fills them in with half the time from check-in to 6 pm in both the gsheet and local.
+    """
     for entry in data:
         if entry[4] == '':
             time1 = datetime.datetime.strptime(entry[3], '%H:%M:%S.%f')
@@ -87,4 +91,3 @@ def forgot_checkout():
             entry[4] = "FALSE"
             row = data.index(entry)+1
             sheet.sheet1.update(f"E{row}:F{row}", [[entry[4], entry[5]]])
-

@@ -1,4 +1,3 @@
-import time
 from log_output import add_time, forgot_checkout
 
 try:
