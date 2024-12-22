@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from sheets_input import *
+from log_output import *
 import sys
 import datafetch
 

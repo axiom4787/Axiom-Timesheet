@@ -1,6 +1,6 @@
 import datetime
 from connection import sheet
-from windows import data as id_dict
+from window import data as id_dict
 
 data = sheet.sheet1.get_all_values()
 
