@@ -1,6 +1,7 @@
 import datetime
 from connection import sheet
 from datafetch import data
+from auto_email import send_email
 
 id_dict = data()
 
@@ -80,9 +81,11 @@ def add_time(student_id: str):
 
 def forgot_checkout():
     # TODO: add an auto email functionality
+    # TODO: add print statement for everyone who forgot to checkout
     """
     finds missing checkouts and fills them in with half the time from check-in to 6 pm in both the gsheet and local.
     """
+    names_forgot = []
     for entry in data:
         if entry[4] == '':
             time1 = datetime.datetime.strptime(entry[3], '%H:%M:%S.%f')
@@ -90,10 +93,22 @@ def forgot_checkout():
             time_difference = (time2 - time1).total_seconds()
             time_difference = round(time_difference / 3600, 2)
             time_difference = time_difference / 2
+
             entry[5] = time_difference
             entry[4] = "FALSE"
+
             row = data.index(entry)+1
             sheet.sheet1.update(f"E{row}:F{row}", [[entry[4], entry[5]]])
             total_time = (float(running_time_data[alpha_id.index(entry[1])][2]) + entry[5])
             running_time_data[alpha_id.index(entry[1])][2] = total_time
             third_sheet.update(f"C{(alpha_id.index(entry[1])) + 2}", [[total_time]])
+
+            names_forgot.append([entry[0], entry[1]])
+
+            subject_string = "Forgot to checkout"
+            message_string = (f"Hello {entry[0]},"
+                              f"\n\nYou forgot to checkout. You will receive half the time from your checkin to 6 pm."
+                              f"\n\nBest, \nAxiom")
+            send_email(entry[1], subject_string, message_string)
+
+    print(f"Who forgot to checkout: {names_forgot}")
