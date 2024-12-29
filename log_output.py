@@ -63,18 +63,27 @@ def add_time(student_id: str):
     adds the entry itself to the local list and the gsheet.
     :param student_id: the id of the student that is being logged
     """
-    time = str(datetime.datetime.now().time())
-    date = str(datetime.datetime.now().date())
+    current_time = str(datetime.datetime.now().time())
+    current_date = str(datetime.datetime.now().date())
 
-    for index in range(len(data)-1, -1, -1):
+    end_index = -1
+    for entry in reversed(data):
+        entry_date = entry[2]
+        if entry_date == current_date:
+            end_index = data.index(entry)
+            end_index -= 1
+            break
+
+    for index in range(len(data)-1, end_index, -1):
         if student_id in data[index]:
-            if data[index][4] == '':
-                checkout(student_id, time, index)
+            checkout_cell = data[index][4]
+            if checkout_cell == '':
+                checkout(student_id, current_time, index)
                 return f"You're all set, {id_dict[student_id]}!"
-            elif data[index][4] != '':
-                checkin(student_id, date, time)
+            elif checkout_cell != '':
+                checkin(student_id, current_date, current_time)
                 return f"Welcome, {id_dict[student_id]}!"
-    checkin(student_id, date, time)
+    checkin(student_id, current_date, current_time)
     return f"Welcome, {id_dict[student_id]}!"
 
 
