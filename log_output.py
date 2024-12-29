@@ -1,6 +1,8 @@
 import datetime
 from connection import sheet
-from windows import data as id_dict
+from datafetch import data
+
+id_dict = data()
 
 data = sheet.sheet1.get_all_values()
 
@@ -68,22 +70,30 @@ def add_time(student_id: str):
         if student_id in data[index]:
             if data[index][4] == '':
                 checkout(student_id, time, index)
-                return None
+                return f"You're all set, {id_dict[student_id]}!"
             elif data[index][4] != '':
                 checkin(student_id, date, time)
-                return None
+                return f"Welcome, {id_dict[student_id]}!"
     checkin(student_id, date, time)
+    return f"Welcome, {id_dict[student_id]}!"
 
 
 def forgot_checkout():
+    # TODO: add an auto email functionality
+    """
+    finds missing checkouts and fills them in with half the time from check-in to 6 pm in both the gsheet and local.
+    """
     for entry in data:
         if entry[4] == '':
             time1 = datetime.datetime.strptime(entry[3], '%H:%M:%S.%f')
             time2 = datetime.datetime.strptime("18:00:00.00", '%H:%M:%S.%f')
             time_difference = (time2 - time1).total_seconds()
             time_difference = round(time_difference / 3600, 2)
-            entry[5] = time_difference / 2
+            time_difference = time_difference / 2
+            entry[5] = time_difference
             entry[4] = "FALSE"
             row = data.index(entry)+1
             sheet.sheet1.update(f"E{row}:F{row}", [[entry[4], entry[5]]])
-
+            total_time = (float(running_time_data[alpha_id.index(entry[1])][2]) + entry[5])
+            running_time_data[alpha_id.index(entry[1])][2] = total_time
+            third_sheet.update(f"C{(alpha_id.index(entry[1])) + 2}", [[total_time]])
