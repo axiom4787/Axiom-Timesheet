@@ -105,10 +105,9 @@ def forgot_checkout():
 
             names_forgot.append([entry[0], entry[1]])
 
-            subject_string = "Forgot to checkout"
             message_string = (f"Hello {entry[0]},"
                               f"\n\nYou forgot to checkout. You will receive half the time from your checkin to 6 pm."
                               f"\n\nBest, \nAxiom")
-            send_email(entry[1], subject_string, message_string)
+            send_email(entry[1], message_string)
 
     print(f"Who forgot to checkout: {names_forgot}")
