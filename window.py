@@ -49,7 +49,7 @@ class Ui_GroupBox(object):
         forgot_checkout()
 
     def update_label(self):
-        text = self.plainTextEdit.toPlainText()
+        text = self.plainTextEdit.toPlainText().strip()
         if len(text) == 8:
             try:
                 data[text]
