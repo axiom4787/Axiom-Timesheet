@@ -6,10 +6,10 @@ id_dict = data()
 
 data = sheet.sheet1.get_all_values()
 
-third_sheet = sheet.get_worksheet(2)
-running_time_data = third_sheet.get_all_values()
-running_time_data.pop(0)
-alpha_id = [running_total_entry[1] for running_total_entry in running_time_data]
+# third_sheet = sheet.get_worksheet(2)
+# running_time_data = third_sheet.get_all_values()
+# running_time_data.pop(0)
+# alpha_id = [running_total_entry[1] for running_total_entry in running_time_data]
 
 
 def checkin(student_id: str, date: str, time: str):
@@ -49,16 +49,16 @@ def checkout(student_id: str, index: int, final_time: str, auto_checkout=False):
 
     sheet.sheet1.update(f"E{index + 1}:F{index + 1}", [data[index][4:]])
 
-    if student_id not in alpha_id:
-        running_time_data.append([id_dict[student_id], student_id, 0])
-        alpha_id.append(student_id)
-        third_sheet.update(f"A{alpha_id.index(student_id)+2}:C{alpha_id.index(student_id)+2}",
-                           [[id_dict[student_id], student_id, 0]])
-
-    row = alpha_id.index(student_id)
-    total_time = (float(running_time_data[row][2]) + time_difference)
-    running_time_data[row][2] = total_time
-    third_sheet.update(f"C{row + 2}", [[total_time]])
+    # if student_id not in alpha_id:
+    #     running_time_data.append([id_dict[student_id], student_id, 0])
+    #     alpha_id.append(student_id)
+    #     third_sheet.update(f"A{alpha_id.index(student_id)+2}:C{alpha_id.index(student_id)+2}",
+    #                        [[id_dict[student_id], student_id, 0]])
+    #
+    # row = alpha_id.index(student_id)
+    # total_time = (float(running_time_data[row][2]) + time_difference)
+    # running_time_data[row][2] = total_time
+    # third_sheet.update(f"C{row + 2}", [[total_time]])
 
     checkout_name = id_dict[student_id]
     print(f"Checking out {checkout_name}")
