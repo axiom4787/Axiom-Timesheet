@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMessageBox, QApplication, QPushButton
 import warnings
 
 try:
-    from sheets_input import add_time, forgot_checkout
+    from log_output import add_time, forgot_checkout
 except Exception as e:
     warnings.warn(f"{e}: SHEET_INPUT IMPORT ERROR. NO DATA WILL BE PUT INTO SHEETS! `add_time` & `forgot_checkout` WILL NOT WORK AS INTENDED")
 
@@ -77,7 +77,7 @@ class Ui_GroupBox(object):
         self.plainTextEdit.textChanged.connect(self.update_label)
 
     def closeEvent(self, event):
-
+        # If the user wants to exit, exit and run `forgot_checkout()`, otherwise ignore the close event
         if show_exit_conf():
             try:
                 forgot_checkout()
@@ -92,8 +92,8 @@ class Ui_GroupBox(object):
         if len(text) == 8:
             try:
                 data[text]
-                add_time(text)
-                show_popup(f"Checked in/out {data[text]}")
+                m = add_time(text)
+                show_popup(f"{m}")
 
             except KeyError as e:
                 print(f"Invalid ID, {e}")
@@ -112,6 +112,11 @@ def createWindow():
     if app is None:
         app = QtWidgets.QApplication(sys.argv)
 
+    try:
+        with open("ui/app.css", "r") as a:
+            app.setStyleSheet(a.read())
+    except Exception as e:
+        warnings.warn("{e}: This app will not be styled!")
 
     window = QtWidgets.QGroupBox()
     ui = Ui_GroupBox()

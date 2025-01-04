@@ -1,0 +1,10 @@
+QWidget{
+	background: #101820;
+	color:  #fff;
+	border-color: #fff;
+	font-weight: bold;
+	font-family: Calibri,Candara,Segoe,Segoe UI,Optima,Arial,sans-serif; 
+}
+QPlainTextEdit{
+	font-family: Verdana,sans-serif;
+}

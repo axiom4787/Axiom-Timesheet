@@ -1,3 +1,4 @@
-from window import createWindow
+from sheets_input import add_time
+#import window
 
-createWindow()
+add_time("Tanmay")
