@@ -84,6 +84,9 @@ def add_time(student_id: str):
     adds the entry itself to the local list and the gsheet.
     :param student_id: the id of the student that is being logged
     """
+
+    data = sheet.sheet1.get_all_values()
+
     current_time = str(datetime.datetime.now().time())
     current_date = str(datetime.datetime.now().date())
 
