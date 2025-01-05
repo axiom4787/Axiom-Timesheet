@@ -41,13 +41,13 @@ def show_exit_conf():
     app = QtWidgets.QApplication.instance()
     if app is None:
         app = QtWidgets.QApplication(sys.argv)
-    
+
     msg_box = QMessageBox()
     msg_box.setText("Are you sure you want to quit?")
     msg_box.setWindowTitle("Message")
     msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
     msg_box.setIcon(QMessageBox.Question)
-    
+
     result = msg_box.exec_()
     return result == QMessageBox.Yes
 
@@ -55,7 +55,7 @@ class Ui_GroupBox(object):
     def setupUi(self, GroupBox):
         # Set up the main UI
         GroupBox.closeEvent = self.closeEvent
-        
+
         GroupBox.setObjectName("Timesheet")
         GroupBox.resize(1433, 888)
         GroupBox.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -63,9 +63,9 @@ class Ui_GroupBox(object):
         self.plainTextEdit.setGeometry(QtCore.QRect(440, 350, 521, 61))
         self.plainTextEdit.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.IBeamCursor))
         self.plainTextEdit.setObjectName("plainTextEdit")
-        
+
         font = self.plainTextEdit.font()
-        font.setPointSize(self.plainTextEdit.height() // 2) 
+        font.setPointSize(self.plainTextEdit.height() // 2)
         self.plainTextEdit.setFont(font)
 
         self.label = QtWidgets.QLabel(GroupBox)

@@ -1,6 +1,13 @@
 import datetime
+# import redis
+# from rq import Queue, Worker
 from connection import sheet
 from datafetch import data
+
+# r = redis.Redis(host='localhost', port=6379, db=0)
+# task_queue = Queue('sheet-entry', connection=r)
+# task_queue.empty()
+# worker = Worker([task_queue], connection=r)
 
 id_dict = data()
 
@@ -103,12 +110,17 @@ def add_time(student_id: str):
     return f"Welcome, {id_dict[student_id]}!"
 
 
+# def queue_student(student_id: str):
+#     print("queueing student")
+#     task_queue.enqueue(add_time, student_id)
+#
+#     worker.work()
 def forgot_checkout():
     # TODO: add an auto email functionality
     """
     finds missing checkouts and fills them in with half the time from check-in to 6 pm in both the gsheet and local.
     """
-
+    data = sheet.sheet1.get_all_values()
     for entry in data:
         if entry[4] == '':
             checkout(entry[1], data.index(entry), "18:00:00.00", True)
