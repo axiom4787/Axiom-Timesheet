@@ -10,10 +10,19 @@ except Exception as e:
 
 import sys
 import datafetch
+import time
+import threading
 
 # Load data here, get it from sheets & convert into json-like dict
+global data
 data = datafetch.data()
 checkins = []
+
+def threaded_periodic_update(sl_t):
+    while True:
+        global data
+        data = datafetch.data()
+        time.sleep(sl_t)
 
 def show_popup(message):
     # Show a popup
@@ -118,6 +127,10 @@ def createWindow():
     except Exception as e:
         warnings.warn("{e}: This app will not be styled!")
 
+    t = threading.Thread(target=threaded_periodic_update, argv=(5,))
+    t.setDaemon(True)
+    t.start()
+
     window = QtWidgets.QGroupBox()
     ui = Ui_GroupBox()
     ui.setupUi(window)
@@ -125,8 +138,7 @@ def createWindow():
 
     sys.exit(app.exec_())
 
+#Testing stuff & Example usage
 if __name__ == "__main__":
-    import threading
-
     t = threading.Thread(target=createWindow)
     t.start()

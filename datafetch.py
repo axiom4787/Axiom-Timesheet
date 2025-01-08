@@ -19,7 +19,6 @@ def data():
 
     return map_
 
-# Example usage
 if __name__ == "__main__":
     mapping = data()
     print(mapping)
