@@ -127,7 +127,7 @@ def createWindow():
     except Exception as e:
         warnings.warn("{e}: This app will not be styled!")
 
-    t = threading.Thread(target=threaded_periodic_update, argv=(5,))
+    t = threading.Thread(target=threaded_periodic_update, args=(5,))
     t.setDaemon(True)
     t.start()
 
