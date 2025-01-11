@@ -3,6 +3,17 @@ import datetime
 # from rq import Queue, Worker
 from connection import sheet
 from datafetch import data
+import sys
+
+room = sys.argv[1]
+
+if room == "cs":
+    sheet_id = 0
+elif room == "mech":
+    sheet_id = 1
+else:
+    print("retry!")
+    sheet_id = 0
 
 # r = redis.Redis(host='localhost', port=6379, db=0)
 # task_queue = Queue('sheet-entry', connection=r)
@@ -11,7 +22,8 @@ from datafetch import data
 
 id_dict = data()
 
-data = sheet.sheet1.get_all_values()
+worksheet = sheet.get_worksheet(sheet_id)
+data = worksheet.get_all_values()
 
 # third_sheet = sheet.get_worksheet(2)
 # running_time_data = third_sheet.get_all_values()
@@ -30,7 +42,7 @@ def checkin(student_id: str, date: str, time: str):
     print(f"Checking in {checkin_name}")
     data.append([checkin_name, student_id, date, time, '', ''])
     row = data.index([checkin_name, student_id, date, time, '', '']) + 1
-    sheet.sheet1.update(f"A{row}:D{row}", [[checkin_name, student_id, date, time]])
+    worksheet.update(f"A{row}:D{row}", [[checkin_name, student_id, date, time]])
 
 
 def checkout(student_id: str, index: int, final_time: str, auto_checkout=False):
@@ -54,7 +66,7 @@ def checkout(student_id: str, index: int, final_time: str, auto_checkout=False):
 
     data[index][5] = time_difference
 
-    sheet.sheet1.update(f"E{index + 1}:F{index + 1}", [data[index][4:]])
+    worksheet.update(f"E{index + 1}:F{index + 1}", [data[index][4:]])
 
     # if student_id not in alpha_id:
     #     running_time_data.append([id_dict[student_id], student_id, 0])
@@ -91,8 +103,7 @@ def add_time(student_id: str):
     adds the entry itself to the local list and the gsheet.
     :param student_id: the id of the student that is being logged
     """
-
-    data = sheet.sheet1.get_all_values()
+    data = worksheet.get_all_values()
 
     current_time = str(datetime.datetime.now().time())
     current_date = str(datetime.datetime.now().date())
@@ -120,7 +131,7 @@ def forgot_checkout():
     """
     finds missing checkouts and fills them in with half the time from check-in to 6 pm in both the gsheet and local.
     """
-    data = sheet.sheet1.get_all_values()
+    data = worksheet.get_all_values()
     for entry in data:
         if entry[4] == '':
             checkout(entry[1], data.index(entry), "18:00:00.00", True)

@@ -7,7 +7,7 @@ def data():
     Returns:
         dict: A dictionary with IDs as keys and names as values.
     """
-    data = sheet.get_worksheet(1).get_all_values()
+    data = sheet.get_worksheet(3).get_all_values()
     data = data[1:]
     
     map_ = {}
