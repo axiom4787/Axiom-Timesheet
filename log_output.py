@@ -17,7 +17,7 @@ if room == "cs":
 elif room == "mech":
     sheet_id = 2
 elif room == "queue":
-    sheet_id = 5
+    sheet_id = 6
 else:
     print("retry!")
     sheet_id = 0
