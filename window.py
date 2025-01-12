@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMessageBox, QApplication, QPushButton
 import warnings
 
 try:
-    from log_output import add_time, forgot_checkout
+    from log_output import send, forgot_checkout
 except Exception as e:
     warnings.warn(f"{e}: SHEET_INPUT IMPORT ERROR. NO DATA WILL BE PUT INTO SHEETS! `add_time` & `forgot_checkout` WILL NOT WORK AS INTENDED")
 
@@ -92,8 +92,8 @@ class Ui_GroupBox(object):
         if len(text) == 8:
             try:
                 data[text]
-                m = add_time(text)
-                show_popup(f"{m}")
+                send(text)
+                show_popup("Queued added successfully!")
 
             except KeyError as e:
                 print(f"Invalid ID, {e}")

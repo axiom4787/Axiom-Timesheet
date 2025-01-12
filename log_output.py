@@ -1,14 +1,23 @@
 import datetime
+import hashlib
+
 from connection import sheet
 from datafetch import data
 import sys
 
+import threading
+from datetime import datetime
+import boto3
+import os
+
 room = sys.argv[1]
 
 if room == "cs":
-    sheet_id = 0
-elif room == "mech":
     sheet_id = 1
+elif room == "mech":
+    sheet_id = 2
+elif room == "queue":
+    sheet_id = 5
 else:
     print("retry!")
     sheet_id = 0
@@ -17,6 +26,11 @@ id_dict = data()
 
 worksheet = sheet.get_worksheet(sheet_id)
 data = worksheet.get_all_values()
+
+
+sqs = boto3.resource('sqs')
+queue_url = os.getenv("QUEUE_URL")
+entry_queue = sqs.Queue(queue_url)
 
 
 def checkin(student_id: str, date: str, time: str):
@@ -41,8 +55,8 @@ def checkout(student_id: str, index: int, final_time: str, auto_checkout=False):
     :param index: the index of the entry that is being checked out
     :param final_time: time_out
     """
-    time1 = datetime.datetime.strptime(data[index][3], '%H:%M:%S.%f')
-    time2 = datetime.datetime.strptime(final_time, '%H:%M:%S.%f')
+    time1 = datetime.strptime(data[index][3], '%H:%M:%S.%f')
+    time2 = datetime.strptime(final_time, '%H:%M:%S.%f')
     time_difference = (time2 - time1).total_seconds()
 
     if auto_checkout:
@@ -60,15 +74,15 @@ def checkout(student_id: str, index: int, final_time: str, auto_checkout=False):
     print(f"Checking out {checkout_name}")
 
 
-def add_time(student_id: str):
+def add_time(student_id: str, datestamp, timestamp):
     """
     adds the entry itself to the local list and the gsheet.
     :param student_id: the id of the student that is being logged
     """
     data = worksheet.get_all_values()
 
-    current_time = str(datetime.datetime.now().time())
-    current_date = str(datetime.datetime.now().date())
+    current_time = str(timestamp)
+    current_date = str(datestamp)
 
     for index in range(len(data)-1, -1, -1):
         if student_id == data[index][1]:
@@ -92,3 +106,28 @@ def forgot_checkout():
     for entry in data:
         if entry[4] == '':
             checkout(entry[1], data.index(entry), "18:00:00.00", True)
+
+
+def send(student_id):
+    current_date = str(datetime.now().date())
+    current_time = str(datetime.now().time())
+    text = f"{student_id}, {current_date}, {current_time}"
+    entry_queue.send_message(MessageBody=text,
+                             MessageGroupId='default',
+                             MessageDeduplicationId=hashlib.md5(text.encode()).hexdigest()
+                             )
+
+
+def receive():
+    while True:
+        for message in entry_queue.receive_messages():
+            task = message.body.split(", ")
+            student_id = task[0]
+            date = task[1]
+            time = task[2]
+            add_time(student_id, date, time)
+            message.delete()
+
+
+receiving_thread = threading.Thread(target=receive, daemon=True)
+receiving_thread.start()
