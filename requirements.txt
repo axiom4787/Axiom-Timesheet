@@ -1,0 +1,4 @@
+gspread 
+datetime
+PyQt5
+warnings

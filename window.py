@@ -10,10 +10,20 @@ except Exception as e:
 
 import sys
 import datafetch
+import settings
 
 # Load data here, get it from sheets & convert into json-like dict
 data = datafetch.data()
 checkins = []
+
+# Settings (hard to read but I don't want it to take up a lot of space)
+style = "ui/app.css"
+if settings.load("theme") == "dark":            style = "ui/app.css"
+elif settings.load("theme") == "light":         style = "ui/light_mode.css"
+else:                                           warnings.warn("THEME NOT FOUND. USING DEFAULT THEME")
+
+if settings.load("forgot_checkout") != None:    show_forgot_checkout = settings.load("forgot_checkout")
+else:                                           show_forgot_checkout = False
 
 def show_popup(message):
     # Show a popup
@@ -80,7 +90,8 @@ class Ui_GroupBox(object):
         # If the user wants to exit, exit and run `forgot_checkout()`, otherwise ignore the close event
         if show_exit_conf():
             try:
-                forgot_checkout()
+                if show_forgot_checkout == True:
+                    forgot_checkout()
                 print("window close")
             except Exception as e:
                 warnings.warn(f"{e}!")
@@ -113,7 +124,7 @@ def createWindow():
         app = QtWidgets.QApplication(sys.argv)
 
     try:
-        with open("ui/app.css", "r") as a:
+        with open(style, "r") as a:
             app.setStyleSheet(a.read())
     except Exception as e:
         warnings.warn("{e}: This app will not be styled!")
