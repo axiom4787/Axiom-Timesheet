@@ -33,6 +33,7 @@ def show_popup(message):
     msg_box.addButton(button, QMessageBox.AcceptRole)
 
     QTimer.singleShot(50, lambda: button.setEnabled(True))
+    QTimer.singleShot(3500, msg_box.accept)  # Close popup after 5 seconds
 
     msg_box.exec_()
 
