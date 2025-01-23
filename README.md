@@ -1,10 +1,9 @@
-![Logo of the project](https://raw.githubusercontent.com/jehna/readme-best-practices/master/sample-logo.png)
+# Axiom Timesheet
+> Managing and checking time for logins and logouts with unique ids
 
-# Name of the project
-> Additional information or tagline
-
-A brief description of your project, what it is used for and how does life get
-awesome when someone starts to use it.
+Axiom Timesheet is essentially a "clocking" program to track hours. 
+You link up a spreadsheet and can input your school or work id number and it will sign you in. 
+Put it in again and it will sign you out. 
 
 ## Installing / Getting started
 
@@ -12,17 +11,28 @@ A quick introduction of the minimal setup you need to get a hello world up &
 running.
 
 ```shell
-packagemanager install awesome-project
-awesome-project start
-awesome-project "Do something!"  # prints "Nah."
+git clone https://github.com/axiom4787/Axiom-Timesheet
+pip install -r reqs.txt # WIP
+python timesheet.py
 ```
 
-Here you should say what actually happens when you execute the code above.
+This will clone the repo, install the requirements for the repo, and then run the app. 
+Obviously, the uncompiled version of this requires python. 
 
 ### Initial Configuration
 
-Some projects require initial configuration (e.g. access tokens or keys, `npm i`).
-This is the section where you would document those requirements.
+You need to set some stuff up before you can use this. 
+
+1. Set up a sheet with the following layout (google sheet): `Timesheet Log #1 | Timesheet Log #2 | Master Log | IDs`
+> Timesheet Log #1 - You log for 1 timesheet instance. 
+> Timesheet Log #2 - Make this even if you don't have another timesheet instance unless you want to change the code.
+> Master Log - Timesheet #1 and #2 are merged into this, good if you want to make a dashboard or extract data. 
+> IDs - Where IDs will be looked up from. Collums should be `Timestamp | Email | Name | ID` for code consistancy.
+
+2. Add your credentials.
+> Log into google cloud manager and get your google sheets api key as a json. Call it `credentials.json` and place it in the main directory
+
+3. Edit ``
 
 ## Developing
 
@@ -30,12 +40,11 @@ Here's a brief intro about what a developer must do in order to start developing
 the project further:
 
 ```shell
-git clone https://github.com/your/awesome-project.git
-cd awesome-project/
-packagemanager install
+git clone https://github.com/axiom4787/Axiom-Timesheet
+pip install -r reqs.txt # WIP
 ```
 
-And state what happens step-by-step.
+Clone the repository and install required imports.
 
 ### Building
 
