@@ -32,7 +32,7 @@ You need to set some stuff up before you can use this.
 2. Add your credentials.
 > Log into google cloud manager and get your google sheets api key as a json. Call it `credentials.json` and place it in the main directory
 
-3. Edit ``
+3. Edit `connection.py`'s `sheets_id` to be the last part of the url of your google sheet. Ie. `https://docs.google.com/spreadsheets/d/1xlz2lMJph320OcxRxOpEJ_A7M0uXdAhCkl0V_9p2Kwc` would be `"1xlz2lMJph320OcxRxOpEJ_A7M0uXdAhCkl0V_9p2Kwc"`
 
 ## Developing
 
@@ -46,37 +46,32 @@ pip install -r reqs.txt # WIP
 
 Clone the repository and install required imports.
 
-### Building
-
-If your project needs some additional steps for the developer to build the
-project after some code changes, state them here:
-
-```shell
-./configure
-make
-make install
-```
-
-Here again you should state what actually happens when the code above gets
-executed.
-
 ### Deploying / Publishing
 
-In case there's some step you have to take that publishes this project to a
-server, this is the right time to state it.
+Here is how to run the program. Only do this after following all prior instructions. 
 
 ```shell
-packagemanager deploy awesome-project -s server.com -u username -p password
+python window.py
 ```
+> Run the app
 
-And again you'd need to tell what the previous code actually does.
+
+```shell
+python window.py cs
+```
+> Run the app and log into the first timesheet log
+
+
+```shell
+python window.py mech
+```
+> Run the app and log into the second
 
 ## Features
 
 What's all the bells and whistles this project can perform?
-* What's the main functionality
-* You can also do another thing
-* If you get really randy, you can even do this
+* Log time into 2 different logs on 2 different machines
+* add more...
 
 ## Configuration
 
